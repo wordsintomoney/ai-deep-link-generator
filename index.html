@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bored Profits - AI Deep Link Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Bored Profits - AI Deep Link Generator">
+    <meta property="og:description" content="Create shareable links for ChatGPT, Claude, and Perplexity. Same prompt. Three AIs. Different answers.">
+    <meta property="og:url" content="https://www.yourdomain.com/your-page">
+    <meta property="og:image" content="https://www.yourdomain.com/preview-image.jpg">
+
+    <style>
+        :root{--bg-primary:#ffffff;--bg-secondary:#f5f5f5;--bg-card:#ffffff;--text-primary:#000000;--text-secondary:#666666;--border-color:#e0e0e0;--accent:#000000;--shadow:0 4px 20px rgba(0,0,0,0.1)}
+        [data-theme="dark"]{--bg-primary:#0a0a0a;--bg-secondary:#1a1a1a;--bg-card:#141414;--text-primary:#ffffff;--text-secondary:#a0a0a0;--border-color:#333333;--accent:#ffffff;--shadow:0 4px 20px rgba(0,0,0,0.5)}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;transition:background .3s,color .3s}
+        .header{background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:1rem 2rem;position:sticky;top:0;z-index:100}
+        .header-content{max-width:600px;margin:0 auto;display:flex;justify-content:space-between;align-items:center}
+        .logo{font-size:1.5rem;font-weight:800;color:var(--text-primary);text-transform:uppercase;position:absolute;left:50%;transform:translateX(-50%)}
+        .dark-toggle{background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:50%;width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+        .dark-toggle svg{width:20px;height:20px;fill:var(--text-primary)}
+        .main{max-width:600px;margin:0 auto;padding:2rem 1.5rem 4rem}
+        .nav-links{text-align:center;padding:1rem 0;display:flex;justify-content:center;gap:1.5rem}
+        .nav-links a{font-size:0.875rem;font-weight:600;color:var(--text-secondary);text-decoration:none;text-transform:uppercase;letter-spacing:0.05em;transition:color .3s}
+        .nav-links a:hover{color:var(--text-primary)}
+        .hero{text-align:center;margin-bottom:2.5rem}
+        .hero h1{font-size:2rem;font-weight:800;margin-bottom:1.5rem}
+        .hero-image{max-width:100%;border-radius:12px;margin-bottom:1.5rem}
+        .hero p{color:var(--text-secondary);font-size:1rem;line-height:1.6;text-align:left}
+        .hero .subtitle{text-align:left;color:var(--text-secondary);font-size:1rem;line-height:1.6}
+        .card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:2rem;box-shadow:var(--shadow)}
+        .input-group{margin-bottom:1.5rem}
+        .input-label{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);margin-bottom:0.5rem;display:block}
+        .prompt-input{width:100%;padding:1rem;border:2px solid var(--border-color);border-radius:12px;font-size:1rem;font-family:inherit;background:var(--bg-primary);color:var(--text-primary);resize:vertical;min-height:100px}
+        .prompt-input:focus{outline:none;border-color:var(--accent)}
+        .prompt-input::placeholder{color:var(--text-secondary)}
+        .char-counter{font-size:.75rem;color:var(--text-secondary);text-align:right;margin-top:0.5rem}
+        .generate-btn{width:100%;padding:1rem;background:var(--accent);color:var(--bg-primary);border:none;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer}
+        .generate-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.15)}
+        .results{display:none;margin-top:2rem;padding-top:2rem;border-top:1px solid var(--border-color)}
+        .results.visible{display:block}
+        .results-title{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);margin-bottom:1rem}
+        .ai-buttons{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem}
+        .ai-btn{display:flex;align-items:center;justify-content:center;gap:0.75rem;padding:1rem;border:2px solid var(--border-color);border-radius:12px;background:var(--bg-primary);text-decoration:none;font-size:1rem;font-weight:600;color:var(--text-primary)}
+        .ai-btn:hover{border-color:var(--accent);transform:translateY(-2px)}
+        .ai-btn svg{width:24px;height:24px}
+        .url-section{display:flex;flex-direction:column;gap:0.75rem}
+        .url-box{display:flex;align-items:center;background:var(--bg-secondary);border-radius:10px;padding:0.75rem 1rem;gap:0.75rem}
+        .url-label{font-weight:600;font-size:.875rem;color:var(--text-secondary);min-width:80px}
+        .url-text{flex:1;font-family:monospace;font-size:.75rem;color:var(--text-primary);word-break:break-all;overflow:hidden;text-overflow:ellipsis}
+        .copy-btn{padding:0.5rem 1rem;background:var(--accent);color:var(--bg-primary);border:none;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;white-space:nowrap}
+        .copy-btn.copied{background:var(--text-secondary)}
+        .share-section{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border-color)}
+        .share-title{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--text-secondary);margin-bottom:0.75rem;text-align:center}
+        .social-buttons{display:flex;justify-content:center;gap:1rem}
+        .social-btn{width:44px;height:44px;border-radius:50%;border:2px solid var(--border-color);background:var(--bg-primary);cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .social-btn:hover{border-color:var(--accent);transform:translateY(-3px)}
+        .social-btn svg{width:20px;height:20px;fill:var(--text-primary)}
+        .footer{text-align:center;padding:2rem;color:var(--text-secondary);font-size:.875rem}
+        .footer a{color:var(--text-primary);text-decoration:none;font-weight:600}
+        @media(max-width:640px){.header{padding:1rem}.logo{font-size:1.25rem}.main{padding:1.5rem 1rem}.hero h1{font-size:1.5rem}.card{padding:1.5rem}.ai-btn{font-size:.9rem;padding:0.875rem}.ai-btn svg{width:20px;height:20px}.url-box{flex-wrap:wrap}.url-label{min-width:60px;font-size:.75rem}.url-text{font-size:.7rem}.copy-btn{font-size:.7rem}.social-btn{width:40px;height:40px}}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <span class="logo">BORED PROFITS</span>
+            <button class="dark-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <svg id="sun-icon" viewBox="0 0 24 24" style="display:none"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0-5v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M2 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <svg id="moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+        </div>
+    </header>
+    <main class="main">
+        <nav class="nav-links">
+            <a href="https://thecambridgelibrary.com" target="_blank">SHOP</a>
+            <a href="https://www.skool.com/profit-buddy-pro" target="_blank">JOIN</a>
+            <a href="https://www.boredprofits.com" target="_blank">LEARN</a>
+        </nav>
+        <div class="hero">
+            <h1>AI Deep Link Generator</h1>
+            <img class="hero-image" src="imgs/hero-illustration.png" alt="AI Deep Link Generator illustration">
+            <p class="subtitle">Same prompt. Three AIs. Wildly different answers. You'd be surprised how dramatically ChatGPT, Claude, and Perplexity respond to the exact same question — different angles, different depths, different strengths.<br><br>
+            One might nail the research, another might write circles around the rest, and the third might catch something the others completely missed. This tool lets you see it all for yourself.<br><br>
+            Just enter your prompt once below, hit generate, and you'll get instant deep links that open your exact prompt in all three platforms — each in its own tab, ready to go. No copying, no pasting, no switching back and forth.<br><br>
+            Whether you're brainstorming, writing, researching, building, or just curious which AI actually gets you, this is the fastest way to find out.</p>
+        </div>
+        <div class="card">
+            <div class="input-group">
+                <label class="input-label" for="promptInput">Your Prompt</label>
+                <textarea id="promptInput" class="prompt-input" placeholder="Enter your question or prompt here..." rows="3"></textarea>
+                <div class="char-counter"><span id="charCount">0</span> / 2000</div>
+            </div>
+            <button class="generate-btn" onclick="generateLinks()">Generate Deep Links</button>
+            <div id="results" class="results">
+                <div class="results-title">Click to Open Chat</div>
+                <div class="ai-buttons">
+                    <a id="chatgptLink" href="#" target="_blank" class="ai-btn"><svg viewBox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A5.8841 5.8841 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.8847 5.8847 0 0 0 18.616 22.82a5.9847 5.9847 0 0 0 3.9978-2.9001 6.0557 6.0557 0 0 0-.3329-7.0988z" fill="#10a37f"/></svg><span>Open in ChatGPT</span></a>
+                    <a id="claudeLink" href="#" target="_blank" class="ai-btn"><svg viewBox="0 0 24 24"><path d="M12 2L2 9L12 16L22 9L12 2Z" fill="#CC785C"/><path d="M2 15L12 22L22 15" stroke="#CC785C" stroke-width="2"/><path d="M2 12L12 19L22 12" stroke="#CC785C" stroke-width="2"/></svg><span>Open in Claude</span></a>
+                    <a id="perplexityLink" href="#" target="_blank" class="ai-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#6c63ff"/><path d="M12 2L14.5 9H22L16 13.5L18.5 21L12 16.5L5.5 21L8 13.5L2 9H9.5L12 2Z" fill="white"/></svg><span>Open in Perplexity</span></a>
+                </div>
+                <div class="url-section">
+                    <div class="url-box"><span class="url-label">ChatGPT</span><span id="chatgptUrl" class="url-text"></span><button class="copy-btn" onclick="copyUrl('chatgptUrl',this)">Copy</button></div>
+                    <div class="url-box"><span class="url-label">Claude</span><span id="claudeUrl" class="url-text"></span><button class="copy-btn" onclick="copyUrl('claudeUrl',this)">Copy</button></div>
+                    <div class="url-box"><span class="url-label">Perplexity</span><span id="perplexityUrl" class="url-text"></span><button class="copy-btn" onclick="copyUrl('perplexityUrl',this)">Copy</button></div>
+                </div>
+            </div>
+            <div class="share-section">
+                <div class="share-title">Share</div>
+                <div class="social-buttons">
+                    <button class="social-btn" onclick="shareToFacebook()"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></button>
+                    <button class="social-btn" onclick="shareToX()"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></button>
+                    <button class="social-btn" onclick="shareToBluesky()"><svg viewBox="0 0 600 530"><path fill="#0085ff" d="M135.72 44.03c66.496 49.921 138.02 151.14 164.28 205.46 26.262-54.316 97.782-155.54 164.28-205.46 47.98-36.044 125.72-63.892 125.72 24.795 0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-21.111-193.34-67.514-17.437 46.403-70.953 193.1-193.34 67.514-64.444-66.128-34.605-132.26 82.697-152.22-67.108 11.421-142.55-7.4491-163.25-81.433-5.9562-21.282-16.111-152.36-16.111-170.07 0-88.687 77.742-60.839 125.72-24.795z"/></svg></button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer">Made by <a href="https://www.boredprofits.com" target="_blank">Bored Profits</a></footer>
+    <script>
+        function toggleTheme(){var h=document.documentElement,s=document.getElementById('sun-icon'),m=document.getElementById('moon-icon');if(h.getAttribute('data-theme')==='dark'){h.removeAttribute('data-theme');s.style.display='none';m.style.display='block';localStorage.setItem('theme','light')}else{h.setAttribute('data-theme','dark');s.style.display='block';m.style.display='none';localStorage.setItem('theme','dark')}}
+        if(localStorage.getItem('theme')==='dark'){document.documentElement.setAttribute('data-theme','dark');document.getElementById('sun-icon').style.display='block';document.getElementById('moon-icon').style.display='none'}
+        function generateLinks(){var p=document.getElementById('promptInput').value.trim();if(!p){alert('Please enter a prompt');return}var e=p.replace(/ /g,'+');document.getElementById('chatgptLink').href='https://chat.openai.com/?q='+e;document.getElementById('claudeLink').href='https://claude.ai/new?q='+e;document.getElementById('perplexityLink').href='https://www.perplexity.ai/search/new?q='+e;document.getElementById('chatgptUrl').textContent='https://chat.openai.com/?q='+e;document.getElementById('claudeUrl').textContent='https://claude.ai/new?q='+e;document.getElementById('perplexityUrl').textContent='https://www.perplexity.ai/search/new?q='+e;document.getElementById('results').classList.add('visible');document.querySelectorAll('.copy-btn').forEach(function(b){b.textContent='Copy';b.classList.remove('copied')})}
+        function copyUrl(id,btn){var url=document.getElementById(id).textContent;navigator.clipboard.writeText(url).then(function(){btn.textContent='Copied!';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copy';btn.classList.remove('copied')},2000)})}
+        var shareMessage="Check out this AI Deep Link Generator by Bored Profits - Create shareable links for ChatGPT, Claude, and Perplexity";
+        function shareToFacebook(){window.open('https://www.facebook.com/sharer/sharer.php?quote='+encodeURIComponent(shareMessage)+'&u='+encodeURIComponent(window.location.href),'_blank','width=600,height=400')}
+        function shareToX(){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(shareMessage+' '+window.location.href),'_blank','width=600,height=400')}
+        function shareToBluesky(){window.open('https://bsky.app/intent/compose?text='+encodeURIComponent(shareMessage+'\n\n'+window.location.href),'_blank','width=600,height=400')}
+        document.getElementById('promptInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();generateLinks()}});
+        var pi=document.getElementById('promptInput'),cc=document.getElementById('charCount');pi.addEventListener('input',function(){cc.textContent=this.value.length});
+    </script>
+
+<script>
+/**
+ * Iframe 元素高亮注入脚本
+ * 需要在目标网站中引入此脚本来支持跨域 iframe 高亮功能
+ *
+ * 使用方法：
+ * 1. 将此脚本添加到目标网站的 HTML 中
+ * 2. 或通过浏览器扩展、用户脚本等方式注入
+ */
+
+(function () {
+  "use strict";
+
+  // 检查是否在 iframe 中
+  if (window.self === window.top) {
+    return; // 不在 iframe 中，不执行
+  }
+
+  // 检查是否已经初始化过
+  if (window.__iframeHighlightInitialized) {
+    return;
+  }
+  window.__iframeHighlightInitialized = true;
+  console.log("Iframe 高亮脚本已加载");
+
+  // 创建高亮覆盖层
+  var overlay = document.createElement("div");
+  overlay.id = "iframe-highlight-overlay";
+  overlay.style.cssText = "\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100vw;\n    height: 100vh;\n    pointer-events: none;\n    z-index: 999999;\n    overflow: hidden;\n  ";
+
+  // 创建悬停高亮框（虚线边框）
+  var highlightBox = document.createElement("div");
+  highlightBox.id = "iframe-highlight-box";
+  highlightBox.style.cssText = "\n    position: absolute;\n    border: 2px dashed #007AFF;\n    background: rgba(0, 122, 255, 0.08);\n    pointer-events: none;\n    display: none;\n    transition: all 0.1s ease;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);\n    border-radius: 2px;\n  ";
+
+  // 创建选中节点的常驻高亮框（实线边框）
+  var selectedBox = document.createElement("div");
+  selectedBox.id = "iframe-selected-box";
+  selectedBox.style.cssText = "\n    position: absolute;\n    border: 2px solid #007AFF;\n    pointer-events: none;\n    display: none;\n    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 8px rgba(255, 107, 53, 0.4);\n    border-radius: 2px;\n    z-index: 1000000;\n  ";
+
+  // 创建悬停标签显示
+  var tagLabel = document.createElement("div");
+  tagLabel.id = "iframe-tag-label";
+  tagLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 2px 6px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 2px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000001;\n    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);\n    font-weight: 500;\n  ";
+
+  // 创建选中节点标签
+  var selectedLabel = document.createElement("div");
+  selectedLabel.id = "iframe-selected-label";
+  selectedLabel.style.cssText = "\n    position: absolute;\n    background: #007AFF;\n    color: white;\n    padding: 3px 8px;\n    font-size: 11px;\n    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    border-radius: 3px;\n    pointer-events: none;\n    display: none;\n    white-space: nowrap;\n    z-index: 1000002;\n    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);\n    font-weight: 600;\n  ";
+  overlay.appendChild(highlightBox);
+  overlay.appendChild(selectedBox);
+  overlay.appendChild(tagLabel);
+  overlay.appendChild(selectedLabel);
+  document.body.appendChild(overlay);
+
+  // 存储当前选中的元素
+  var selectedElement = null;
+  var highlightEnabled = false;
+
+  // 更新选中元素的高亮显示
+  function updateSelectedHighlight(element) {
+    console.log("updateSelectedHighlight called with:", element);
+    if (!element) {
+      selectedBox.style.display = "none";
+      selectedLabel.style.display = "none";
+      selectedElement = null;
+      console.log("Cleared selected highlight");
+      return;
+    }
+    selectedElement = element;
+    var rect = element.getBoundingClientRect();
+    console.log("Selected element rect:", rect);
+
+    // 更新选中高亮框位置
+    selectedBox.style.display = "block";
+    selectedBox.style.left = "".concat(rect.left - 2, "px");
+    selectedBox.style.top = "".concat(rect.top - 2, "px");
+    selectedBox.style.width = "".concat(rect.width + 4, "px");
+    selectedBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新选中标签位置和内容
+    selectedLabel.style.display = "block";
+    selectedLabel.textContent = "\u2713 <".concat(element.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 28;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 5) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    var labelWidth = selectedLabel.offsetWidth || 100; // 预估宽度
+    if (labelLeft + labelWidth > window.innerWidth - 10) {
+      labelLeft = window.innerWidth - labelWidth - 10;
+    }
+    selectedLabel.style.left = "".concat(Math.max(5, labelLeft), "px");
+    selectedLabel.style.top = "".concat(labelTop, "px");
+    console.log("Selected highlight positioned at:", {
+      left: selectedBox.style.left,
+      top: selectedBox.style.top,
+      width: selectedBox.style.width,
+      height: selectedBox.style.height
+    });
+  }
+  function getElementSelector(element) {
+    if (!(element instanceof Element)) throw new Error('Argument must be a DOM element');
+    var segments = [];
+    var current = element;
+    while (current !== document.documentElement) {
+      var selector = '';
+      // 优先检查唯一ID
+      if (current.id && document.querySelectorAll("#".concat(current.id)).length === 1) {
+        segments.unshift("#".concat(current.id));
+        break; // ID唯一，无需继续向上
+      }
+
+      // 生成类名选择器（取第一个有效类名）
+      var classes = Array.from(current.classList).filter(function (c) {
+        return !c.startsWith('js-');
+      });
+      var className = classes.length > 0 ? ".".concat(classes[0]) : '';
+
+      // 生成位置索引（nth-child）
+      var tag = current.tagName.toLowerCase();
+      if (!className) {
+        var siblings = Array.from(current.parentNode.children);
+        var index = siblings.findIndex(function (el) {
+          return el === current;
+        }) + 1;
+        selector = "".concat(tag, ":nth-child(").concat(index, ")");
+      } else {
+        selector = className;
+      }
+      segments.unshift(selector);
+      current = current.parentElement;
+    }
+
+    // 处理根元素
+    if (current === document.documentElement) {
+      segments.unshift('html');
+    }
+    return segments.join(' > ');
+  }
+
+  // 获取元素文本内容
+  function getElementText(element) {
+    var _element$textContent;
+    if (element.tagName === "INPUT") {
+      return element.value || element.placeholder || "";
+    }
+    if (element.tagName === "TEXTAREA") {
+      return element.value || element.placeholder || "";
+    }
+    var text = ((_element$textContent = element.textContent) === null || _element$textContent === void 0 ? void 0 : _element$textContent.trim()) || "";
+    return text.length > 50 ? text.substring(0, 50) + "..." : text;
+  }
+
+  // 获取元素属性信息
+  function getElementAttributes(element) {
+    var attrs = {};
+    for (var i = 0; i < element.attributes.length; i++) {
+      var attr = element.attributes[i];
+      attrs[attr.name] = attr.value;
+    }
+    return attrs;
+  }
+
+  // 鼠标悬停事件处理
+  function handleMouseOver(e) {
+    if (!highlightEnabled) return;
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免高亮 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 如果是已选中的元素，不显示悬停高亮
+    if (target === selectedElement) {
+      highlightBox.style.display = "none";
+      tagLabel.style.display = "none";
+      return;
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+
+    // 更新悬停高亮框位置
+    highlightBox.style.display = "block";
+    highlightBox.style.left = "".concat(rect.left - 2, "px");
+    highlightBox.style.top = "".concat(rect.top - 2, "px");
+    highlightBox.style.width = "".concat(rect.width + 4, "px");
+    highlightBox.style.height = "".concat(rect.height + 4, "px");
+
+    // 更新标签位置和内容
+    tagLabel.style.display = "block";
+    tagLabel.textContent = "<".concat(target.tagName.toLowerCase(), ">");
+
+    // 计算标签位置，确保不超出视窗
+    var labelTop = rect.top - 22;
+    var labelLeft = rect.left;
+
+    // 如果标签会超出顶部，显示在元素下方
+    if (labelTop < 0) {
+      labelTop = rect.bottom + 5;
+    }
+
+    // 如果标签会超出右侧，向左调整
+    if (labelLeft + tagLabel.offsetWidth > window.innerWidth) {
+      labelLeft = window.innerWidth - tagLabel.offsetWidth - 5;
+    }
+    tagLabel.style.left = "".concat(Math.max(0, labelLeft), "px");
+    tagLabel.style.top = "".concat(labelTop, "px");
+
+    // 发送消息到父窗口
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 鼠标离开事件处理
+  function handleMouseOut(e) {
+    if (!highlightEnabled) return;
+    var relatedTarget = e.relatedTarget;
+
+    // 如果鼠标移动到高亮相关元素上，不隐藏高亮
+    if (relatedTarget && (relatedTarget === highlightBox || relatedTarget === tagLabel || relatedTarget === overlay || relatedTarget === selectedBox || relatedTarget === selectedLabel)) {
+      return;
+    }
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-hover",
+        data: null,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 点击事件处理
+  function handleClick(e) {
+    var target = e.target;
+    if (!target || target === overlay || target === highlightBox || target === tagLabel || target === selectedBox || target === selectedLabel) {
+      return;
+    }
+
+    // 避免处理 html 和 body 元素
+    if (target === document.documentElement || target === document.body) {
+      return;
+    }
+
+    // 检查是否是交互元素，这些元素需要保留默认行为
+    var isInteractiveElement = ['input', 'textarea', 'select', 'button', 'a'].includes(target.tagName.toLowerCase());
+
+    // 如果高亮功能启用，对于非交互元素阻止默认行为和事件传播
+    if (highlightEnabled) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    var rect = target.getBoundingClientRect();
+    var selector = getElementSelector(target);
+    var text = getElementText(target);
+    var attributes = getElementAttributes(target);
+    console.log("Element clicked:", {
+      tagName: target.tagName,
+      selector: selector,
+      rect: rect
+    });
+
+    // 立即更新选中高亮
+    updateSelectedHighlight(target);
+
+    // 隐藏悬停高亮，因为现在是选中状态
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    var elementInfo = {
+      tagName: target.tagName.toLowerCase(),
+      rect: {
+        left: rect.left,
+        top: rect.top,
+        right: rect.right,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height,
+        x: rect.x,
+        y: rect.y
+      },
+      selector: selector,
+      text: text,
+      attributes: attributes,
+      url: window.location.href,
+      path: window.location.pathname,
+      timestamp: Date.now()
+    };
+    try {
+      window.parent.postMessage({
+        type: "iframe-element-click",
+        data: elementInfo,
+        source: "iframe-highlight-injector"
+      }, "*");
+    } catch (error) {
+      console.warn("无法发送消息到父窗口:", error);
+    }
+  }
+
+  // 监听来自父窗口的消息
+  function handleParentMessage(event) {
+    console.log("Received message from parent:", event.data);
+    if (event.data.type === "iframe-highlight-toggle") {
+      var enabled = event.data.enabled;
+      console.log("Highlight toggle:", enabled);
+      if (enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "enable-iframe-highlight") {
+      console.log("Enable iframe highlight");
+      enableHighlight();
+    } else if (event.data.type === "disable-iframe-highlight") {
+      console.log("Disable iframe highlight");
+      disableHighlight();
+    } else if (event.data.type === "toggle-iframe-highlight") {
+      var _enabled = event.data.enabled !== undefined ? event.data.enabled : !highlightEnabled;
+      console.log("Toggle iframe highlight to:", _enabled);
+      if (_enabled) {
+        enableHighlight();
+      } else {
+        disableHighlight();
+      }
+    } else if (event.data.type === "update-selected-element") {
+      var selector = event.data.selector;
+      console.log("Update selected element with selector:", selector);
+      if (selector) {
+        try {
+          var element = document.querySelector(selector);
+          console.log("Found element by selector:", element);
+          updateSelectedHighlight(element);
+        } catch (error) {
+          console.warn("Failed to select element:", error);
+          updateSelectedHighlight(null);
+        }
+      } else {
+        updateSelectedHighlight(null);
+      }
+    } else if (event.data.type === "clear-selected-element") {
+      console.log("Clear selected element");
+      updateSelectedHighlight(null);
+    }
+  }
+
+  // 启用高亮功能
+  function enableHighlight() {
+    console.log("Enabling highlight");
+    document.addEventListener("mouseover", handleMouseOver, true);
+    document.addEventListener("mouseout", handleMouseOut, true);
+    document.addEventListener("click", handleClick, true);
+    highlightEnabled = true;
+    overlay.style.display = "block";
+  }
+
+  // 禁用高亮功能
+  function disableHighlight() {
+    console.log("Disabling highlight");
+    highlightEnabled = false;
+    // 保持事件监听器，但通过 highlightEnabled 变量控制行为
+    // 这样可以保留选中状态的显示
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    // 不隐藏 selectedBox 和 selectedLabel，保留选中状态
+  }
+
+  // 完全禁用高亮功能（移除所有监听器）
+  function fullyDisableHighlight() {
+    console.log("Fully disabling highlight");
+    highlightEnabled = false;
+    document.removeEventListener("mouseover", handleMouseOver, true);
+    document.removeEventListener("mouseout", handleMouseOut, true);
+    document.removeEventListener("click", handleClick, true);
+    overlay.style.display = "none";
+    highlightBox.style.display = "none";
+    tagLabel.style.display = "none";
+    selectedBox.style.display = "none";
+    selectedLabel.style.display = "none";
+  }
+
+  // 添加事件监听
+  enableHighlight();
+  window.addEventListener("message", handleParentMessage);
+
+  // 暴露全局函数供外部调用
+  window.__iframeHighlightControl = {
+    enable: enableHighlight,
+    disable: disableHighlight,
+    fullyDisable: fullyDisableHighlight,
+    isEnabled: function isEnabled() {
+      return highlightEnabled;
+    },
+    getSelectedElement: function getSelectedElement() {
+      return selectedElement;
+    },
+    updateSelected: updateSelectedHighlight,
+    // 通过消息发送开关控制
+    sendToggleMessage: function sendToggleMessage(enabled) {
+      window.parent.postMessage({
+        type: 'iframe-highlight-status',
+        enabled: enabled || highlightEnabled,
+        source: 'iframe-highlight-injector'
+      }, '*');
+    }
+  };
+
+  // 通知父窗口脚本已加载
+  try {
+    window.parent.postMessage({
+      type: "iframe-highlight-ready",
+      data: {
+        url: window.location.href,
+        userAgent: navigator.userAgent,
+        timestamp: Date.now()
+      },
+      source: "iframe-highlight-injector"
+    }, "*");
+  } catch (error) {
+    console.warn("无法发送就绪消息到父窗口:", error);
+  }
+
+  // 清理函数
+  window.__iframeHighlightCleanup = function () {
+    fullyDisableHighlight();
+    window.removeEventListener("message", handleParentMessage);
+    if (overlay.parentElement) {
+      overlay.parentElement.removeChild(overlay);
+    }
+    delete window.__iframeHighlightInitialized;
+    delete window.__iframeHighlightCleanup;
+  };
+})();
+
+</script>
+</body>
+</html>
